@@ -6,3 +6,20 @@ mixin createPostForm(userLoggedIn)
             textarea#postTextarea(placeholder="What's happening?")
             .buttonsContainer   
                 button#submitPostButton(disabled="") Post 
+
+mixin createDeletePostModal()
+    #deletePostModal.modal.fade(tabindex='-1', role='dialog', arialabelledby='deletePostModalLabel', aria-hidden = 'true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5#deletePostModalLabel.modal-title Delete 
+                    button.clode(type="button", data-dismiss="modal", aria-label="Close")
+                    span(aria-hidden='true') &times;
+                .modal-body
+                    p You won't be able to delete this
+                .modal-footer
+                    button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+                    button#deletePostbutton.btn.btn-primary(type='button') Delete
+
+mixin createPostModals(userLoggedIn)
+    +createDeletePostModal(userLoggedIn)

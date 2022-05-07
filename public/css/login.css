@@ -1,5 +1,5 @@
 body {
-	background-color: lavender;
+	background-color: pink;
 }
 
 .wrapper {
@@ -36,7 +36,7 @@ input[type="password"] {
 }
 
 input[type="submit"] {
-    background-color: #0099ff;
+    background-color: hotpink;
     color: #fff;
     border: none;
     border-radius: 2px;

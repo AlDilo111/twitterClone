@@ -1,0 +1,10 @@
+extends layouts/main-layout.pug
+
+block conntent
+    script  var postId ='!{postId}'
+    .postContainer 
+
+    +createDeletePostModal(userLoggedIn)
+
+block scripts
+    script(src="/js/postPage.js")
