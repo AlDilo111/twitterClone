@@ -2,6 +2,8 @@
 	--pink: hotpink;
 	--lightGrey: rgb(230, 236, 240);
 	--spacing: 15px;
+	--greyText: rgb(101,119,134);
+	--greyButtonText: rgba(0,0,0,0.34);
 }
 
 *{
@@ -29,7 +31,7 @@ nav {
 	flex-direction: column;
 	align-items: flex-end;
 	height: 100%;
-	background-color: lavender;
+	background-color: pink;
 }
 
 nav a {
@@ -52,6 +54,12 @@ nav a:hover {
 
 a.black {
 	color: black;
+}
+
+button {
+	background-color: transparent;
+	border: none;
+	color: var(--greyButtonText);
 }
 
 .mainSectionContainer {
@@ -119,4 +127,59 @@ a.black {
 	border: none;
 	border-radius: 40%;
     padding: 7px 15px;
+}
+
+.post {
+	display: flex;
+	flex-direction: column;
+	padding: var(--spacing);
+	border-bottom: 1px sold var(--lightGrey);
+	flex-shrink: 0;
+}
+
+.mainContentContainer {
+	padding-left: var();
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+
+}
+
+.username,
+.date {
+	color: var(--greyText)
+}
+
+.displayName {
+	font-weight: bold;
+}
+
+.postFooter {
+	display: flex;
+	align-items: center;
+}
+
+.postFooter .postButtonContainer {
+	flex:1;
+	display: flex;
+}
+
+.postFooter .postButtonContainer button {
+	padding: 2px 5px;
+	cursor: pointer;
+}
+
+.header a:hover{
+	text-decoration: underling;
+}
+
+.header a,
+.header span {
+	padding-right: 5px;
+}
+
+.postButtonContainer button:hover {
+	background-color: pink;
+	color: var(--pink);
+	border-radius: 50%;
 }
