@@ -196,3 +196,9 @@ nav a:hover {
 .postButtonContainer.green button.active {
 	color: green;
 }
+
+.postButtonContainer.green button:hover {
+	background-color: rgba(21, 250, 100, 0.764);
+	color: green;
+}
+
