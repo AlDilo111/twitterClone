@@ -189,6 +189,17 @@ nav a:hover {
 	border-radius: 50%;
 }
 
+.modal .postFormContainer {
+	border: none;
+	padding: 0;
+	padding-top: var(--spacing);
+}
+
+.modal .post {
+	padding:0;
+	padding-bottom: var(--spacing);
+}
+
 .postButtonContainer.red button.active {
 	color: red;
 }
@@ -202,3 +213,11 @@ nav a:hover {
 	color: green;
 }
 
+.postActionContainer {
+	padding-left: 35px;
+	font-size: 13px;
+	color: var(--greyText);
+	margin-bottom: 5px;
+}
+
+.
