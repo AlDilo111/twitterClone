@@ -28,32 +28,64 @@ $("#submitPostButton, #submitReplyButton").click(() => {
 		content: textbox.val(),
 	};
 
-	if(isModal){
+	if (isModal) {
 		var id = button.data().id;
-		if(id == null) return alert("Button id is null");
+		if (id == null) return alert("Button id is null");
 		data.replyTo = id;
 	}
 
 	$.post("/api/posts", data, (postData) => {
-		var html = createPostHtml(postData);
-		$(".postContainer").prepend(html);
-		textbox.val("");
-		button.prop("disabled", true);
+		if (postData.replyto) {
+			location.reload();
+		} else {
+			var html = createPostHtml(postData);
+			$(".postContainer").prepend(html);
+			textbox.val("");
+			button.prop("disabled", true);
+		}
 	});
 });
 
-$("#replyModal").on("show.bs.modal", (event)=> {
+$("#replyModal").on("show.bs.modal", (event) => {
 	var button = $(event.relatedTarget);
 	var postId = getPostIdFromElement(button);
 	$("#submitReplyButton").data("id", postId);
 
-    $.get("/api/posts/" + postId, results => {
-		outputPosts(results, $("#originalPostContainer"));
+	$.get("/api/posts/" + postId, (results) => {
+		outputPosts(results.postData, $("#originalPostContainer"));
 	});
 });
 
-$("#replyModal").on("hidden.bs.modal", (event)=> {
+$("#replyModal").on("hidden.bs.modal", () => $("#originalPostContainer").html(""));
+
+$("#deletePostModal").on("hidden.bs.modal", (event) => {
 	$("#originalPostContainer").html("");
+});
+
+
+$("#deleteModal").on("show.bs.modal", (event) => {
+	var button = $(event.relatedTarget);
+	var postId = getPostIdFromElement(button);
+	$("#deletePostButton").data("id", postId);
+
+	console.log($("#deletePostButton").data().id);
+});
+
+$("#deletePostButton").click((event)=>{
+	var postId = $(event.target).data("id");
+
+	$.ajax({
+		url: `/api/posts/${postId}`,
+		type: "DELETE",
+		success: (data, status, xhr) => {
+
+			if (xhr.status != 200){
+				alert("could not delete post");
+				return;
+			}
+			location.reload();
+		},
+	});
 });
 
 $(document).on("click", ".likeButton", (event) => {
@@ -98,6 +130,15 @@ $(document).on("click", ".retweetButton", (event) => {
 	});
 });
 
+$(document).on("click", ".post", (event) => {
+	var element = $(event.target);
+	var postId = getPostIdFromElement(element);
+
+	if(postId != undefined && !element.is("button")){
+		window.location.href = '/posts/' + postId;
+	}
+});
+
 function getPostIdFromElement(element) {
 	var isRoot = element.hasClass("post");
 	var rootElement = isRoot ? element : element.closest(".post");
@@ -117,7 +158,7 @@ function createPostHtml(postData) {
 
 	var postedBy = postData.postedBy;
 
-	if (postedBy._id == undefined) {
+	if (postedBy._id === undefined) {
 		return console.log("User object not populated");
 	}
 
@@ -139,10 +180,23 @@ function createPostHtml(postData) {
 		retweetText = `<span>Retweeted by <a href='/profile/${retweetedBy}' class="displayName">@${retweetedBy}</a></span>`;
 	}
 
+	var replyFlag = "";
+	if (postData.replyTo && postData.replyTo._id) {
+		if (!postData.replyTo._id) {
+			return alert("Reply to is not populated");
+		} else if (!postData.replyTo.postedBy._id) {
+			return alert("Posted by to is not populated");
+		}
+
+		var replyToUsername = postData.replyTo.postedBy.username;
+		replyFlag = `<div class='replyFlag'>
+		Replying to <a href='/profile/${replyToUsername}'>@${replyToUsername}</a>
+		</div>`;
+	}
 	//DELETE POST
 	var buttons = "";
 	if (postData.postedBy._id == userLoggedIn._id) {
-		buttons = `<button data-id="${postData._id}" data-toggle="modal" data-targnet="deletePostModal"><i class="fas fa-times"></i></button>`;
+		buttons = `<button data-id="${postData._id}" data-toggle="modal" data-target="#deleteModal"><i class="fas fa-times"></i></button>`;
 	}
 
 	return `<div class='post' data-id='${postData._id}'>
@@ -160,6 +214,7 @@ function createPostHtml(postData) {
 						<span class="date">${timestamp}</span>
 						${buttons}
 						</div>
+					${replyFlag}
 					<div class='postBody'>
 					<span>${postData.content}</span>
 					</div>
@@ -216,18 +271,36 @@ function timeDifference(current, previous) {
 }
 
 function outputPosts(results, container) {
-    container.html("");
+	container.html("");
 
-	if(!Array.isArray(results)){
+	if (!Array.isArray(results)) {
 		results = [results];
 	}
 
-    results.forEach(result => {
-        var html = createPostHtml(result);
-        container.append(html);
-    });
+	results.forEach((result) => {
+		var html = createPostHtml(result);
+		container.append(html);
+	});
 
-    if (results.length == 0) {
-        container.append("<span class='noResults'>Nothing to show.</span>");
-    }
+	if (results.length == 0) {
+		container.append("<span class='noResults'>Nothing to show.</span>");
+	}
+}
+
+function outputPostsWithReplies(results, container) {
+	container.html("");
+
+	if (results.replyTo !== undefined && results.replyTo._id !== undefined) {
+		var html = createPostHtml(results.replyTo);
+		container.append(html);
+	}
+
+	var mainPostHtml = createPostHtml(results.postData);
+	container.append(mainPostHtml);
+
+	results.replies.forEach((result) => {
+		var html = createPostHtml(result);
+		container.append(html);
+	});
+
 }

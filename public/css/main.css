@@ -220,4 +220,10 @@ nav a:hover {
 	margin-bottom: 5px;
 }
 
-.
+.replyFlag{
+	margin-bottom:5px;
+}
+
+.replyFlag a{
+	color: var(--pink);
+}

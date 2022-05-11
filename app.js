@@ -29,6 +29,8 @@ app.use(
 const loginRoute = require("./routes/loginRoutes");
 const registerRoute = require("./routes/registerRoutes");
 const logoutRoute = require("./routes/logout");
+const postPageRoute = require("./routes/postRoutes");
+
 
 //API ROUTS
 const postAPIRoute = require("./routes/api/posts");
@@ -37,6 +39,7 @@ const { json } = require("body-parser");
 app.use("/login", loginRoute);
 app.use("/register", registerRoute);
 app.use("/logout", logoutRoute);
+app.use("/posts", middleware.requireLogin, postPageRoute);
 
 app.use("/api/posts", postAPIRoute);
 
